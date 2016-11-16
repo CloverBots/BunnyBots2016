@@ -6,7 +6,8 @@
 class Robot: public IterativeRobot
 {
 private:
-	std::unique_ptr<Command> autonomousCommand;
+
+	Command* autonomousCommand;
 	SendableChooser *chooser;
 
 	void RobotInit()
@@ -50,7 +51,7 @@ private:
 			autonomousCommand.reset(new ExampleCommand());
 		} */
 
-		autonomousCommand.reset((Command *)chooser->GetSelected());
+		autonomousCommand = (Command *)chooser->GetSelected();
 
 		if (autonomousCommand != NULL)
 			autonomousCommand->Start();
