@@ -6,7 +6,7 @@
 class OI
 {
 private:
-
+//make pointer for joystick
 public:
 	OI();
 };
