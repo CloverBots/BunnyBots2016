@@ -9,6 +9,7 @@ private:
 
 public:
 	OI();
+	Joystick* Controller;
 };
 
 #endif
