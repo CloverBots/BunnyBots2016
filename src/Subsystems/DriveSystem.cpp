@@ -22,7 +22,7 @@ void DriveSystem::DriveBasic(float Turn, float Strafe, float Throttle)
 {
 	int TurnDirection; //0 if left, 1 if right
 	int StrafeDirection; //0 if left, 1 if right
-	int ThrottleDirection //0 if foreward, 1 if backward
+	int ThrottleDirection; //0 if foreward, 1 if backward
 	float TurnFactor;
 	float StrafeFactor;
 	float MaxTurnMultiTask=0.5; //CHANGE THIS AFTER TESTING. Affects how much the robot can turn while it is already moving on 1+ axes
@@ -36,10 +36,10 @@ void DriveSystem::DriveBasic(float Turn, float Strafe, float Throttle)
 	}
 	else if (((Turn!=0)&&(Strafe==0))&&(Throttle==0))
 	{
-		m_pLeftFrontTalon->Set(-(Turn));
-		m_pRightFrontTalon->Set(Turn);
-		m_pLeftRearTalon->Set(-(Turn));
-		m_pRightRearTalon->Set(Turn);
+		m_pLeftFrontTalon->Set(Turn);
+		m_pRightFrontTalon->Set(-(Turn));
+		m_pLeftRearTalon->Set(Turn);
+		m_pRightRearTalon->Set(-(Turn));
 	}
 	else if (((Turn==0)&&(Strafe!=0))&&(Throttle==0))
 	{
@@ -73,16 +73,16 @@ void DriveSystem::DriveBasic(float Turn, float Strafe, float Throttle)
 			switch (TurnDirection)
 			{
 			case 0 :
-				m_pLeftFrontTalon->Set(Throttle);
-				m_pRightFrontTalon->Set(Throttle-TurnFactor);
-				m_pLeftRearTalon->Set(Throttle);
-				m_pRightRearTalon->Set(Throttle-TurnFactor);
-				break;
-			case 1 :
 				m_pLeftFrontTalon->Set(Throttle-TurnFactor);
 				m_pRightFrontTalon->Set(Throttle);
 				m_pLeftRearTalon->Set(Throttle-TurnFactor);
 				m_pRightRearTalon->Set(Throttle);
+				break;
+			case 1 :
+				m_pLeftFrontTalon->Set(Throttle);
+				m_pRightFrontTalon->Set(Throttle-TurnFactor);
+				m_pLeftRearTalon->Set(Throttle);
+				m_pRightRearTalon->Set(Throttle-TurnFactor);
 				break;
 			}
 			break;
@@ -164,7 +164,7 @@ void DriveSystem::DriveBasic(float Turn, float Strafe, float Throttle)
 	}
 }
 
-void DriveSystem::DriveAssist(double Turn, double Strafe, double Throttle)
+void DriveSystem::DriveAssist(float Turn, float Strafe, float Throttle)
 {
 
 }
