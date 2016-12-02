@@ -2,5 +2,10 @@
 
 OI::OI()
 {
-	// Process operator interface input here.
+	accessoryController = new Joystick(2);
+}
+
+Joystick* OI::GetJoystick()
+{
+	return accessoryController;
 }

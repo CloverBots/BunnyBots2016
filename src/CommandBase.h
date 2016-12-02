@@ -19,6 +19,7 @@ public:
 	CommandBase();
 	static void init();
 	// Create a single static instance of all of your subsystems
+	static std::unique_ptr<Grabber> grabber;
 	static std::unique_ptr<ExampleSubsystem> examplesubsystem;
 	static std::unique_ptr<OI> oi;
 };
