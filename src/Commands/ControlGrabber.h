@@ -1,13 +1,13 @@
-#ifndef Grabber_H
-#define Grabber_H
+#ifndef ControlGrabber_H
+#define ControlGrabber_H
 
 #include "../CommandBase.h"
 #include "WPILib.h"
 
-class Grabber: public CommandBase
+class ControlGrabber: public CommandBase
 {
 public:
-	Grabber();
+	ControlGrabber();
 	void Initialize();
 	void Execute();
 	bool IsFinished();
