@@ -24,6 +24,5 @@ void CommandBase::init()
 	// line should be repeated for each subsystem in the project.
 	examplesubsystem.reset(new ExampleSubsystem());
 	pGrabber.reset(new Grabber());
-
 	oi.reset(new OI());
 }
