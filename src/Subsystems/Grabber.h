@@ -7,8 +7,14 @@
 class Grabber: public Subsystem
 {
 private:
-	Talon* grabberLift;
-	Talon* roller;
+	float m_P = 0.25f;
+	float m_I = 1.5f;
+	float m_D = 0.0f;
+	const double m_ENCODER_RATE = 3600;
+	Encoder* grabberEncoder;
+	PIDController* grabberController;
+	Talon* grabberTalon;
+	Talon* rollerTalon;
 public:
 	Grabber();
 	void InitDefaultCommand();
