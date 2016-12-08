@@ -16,7 +16,14 @@ void ControlGrabber::Initialize()
 // Called repeatedly when this Command is scheduled to run
 void ControlGrabber::Execute()
 {
-	//
+	CommandBase::pGrabber->SetArmSpeed(CommandBase::oi->GetArmJoystick()->GetRawAxis(1));
+
+/*
+	 if(m_pAButton WhenPressed)
+	{
+		CommandBase::pGrabber->
+	}
+*/
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -28,7 +35,7 @@ bool ControlGrabber::IsFinished()
 // Called once after isFinished returns true
 void ControlGrabber::End()
 {
-
+	CommandBase::pGrabber->SetArmSpeed(0.0f);
 }
 
 // Called when another command which requires one or more of the same

@@ -6,9 +6,17 @@
 class OI
 {
 private:
-//make pointer for joystick
+
+	Joystick* m_pArmJoystick;
+
+	JoystickButton* m_pAButton;
+
+
+
 public:
 	OI();
+	Joystick* GetArmJoystick();
+
 };
 
 #endif

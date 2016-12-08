@@ -8,6 +8,7 @@ class Grabber: public Subsystem
 {
 private:
 	Talon* grabberMotor;
+	Talon* m_pArmLiftMotor;
 
 	Encoder* m_pArmEncoder;
 	PIDController* m_pPIDController;
@@ -22,6 +23,7 @@ public:
 	void InitDefaultCommand();
 
 	void SetGrabberSpeed(float speed);
+	void SetArmSpeed(float speed);
 };
 
 #endif
