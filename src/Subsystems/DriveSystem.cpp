@@ -1,7 +1,9 @@
+#include "DrivePrecise.h"
+#include <cmath>
 #include "DriveSystem.h"
 #include "../RobotMap.h"
 #include "Talon.h"
-#include <cmath>
+
 
 
 DriveSystem::DriveSystem() :
@@ -12,162 +14,241 @@ DriveSystem::DriveSystem() :
 	m_pRightFrontTalon = new Talon(RobotMap::RIGHT_FRONT_TALON);
 	m_pRightRearTalon = new Talon(RobotMap::RIGHT_REAR_TALON);
 }
-
 void DriveSystem::InitDefaultCommand()
 {
 	// Set the default command for a subsystem here.
 	void SetDefaultCommand(new DrivePrecise());
 }
-void DriveSystem::DriveBasic(float Turn, float Strafe, float Throttle)
+void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 {
-	int TurnDirection; //0 if left, 1 if right
-	int StrafeDirection; //0 if left, 1 if right
-	int ThrottleDirection; //0 if foreward, 1 if backward
-	float TurnFactor;
-	float StrafeFactor;
-	float MaxTurnMultiTask=0.5; //CHANGE THIS AFTER TESTING. Affects how much the robot can turn while it is already moving on 1+ axes
-	float MaxStrafeMultiTask=0.5; //Same as above except for strafing
-	if (((Turn==0)&&(Strafe==0))&&(Throttle!=0))
+	float Throttle = ThrottleRaw;
+	float Turn = (1-TurnRaw);
+	float Strafe = (1-StrafeRaw);
+	float LimitFactor = 0.5; //Limits how much you can slow one set of wheels
+	switch (DrivePrecise::throttleStatus)
 	{
-		m_pLeftFrontTalon->Set(Throttle);
-		m_pRightFrontTalon->Set(Throttle);
-		m_pLeftRearTalon->Set(Throttle);
-		m_pRightRearTalon->Set(Throttle);
-	}
-	else if (((Turn!=0)&&(Strafe==0))&&(Throttle==0))
-	{
-		m_pLeftFrontTalon->Set(Turn);
-		m_pRightFrontTalon->Set(-(Turn));
-		m_pLeftRearTalon->Set(Turn);
-		m_pRightRearTalon->Set(-(Turn));
-	}
-	else if (((Turn==0)&&(Strafe!=0))&&(Throttle==0))
-	{
-		m_pLeftFrontTalon->Set(Strafe);
-		m_pRightFrontTalon->Set(-(Strafe));
-		m_pLeftRearTalon->Set(-(Strafe));
-		m_pRightRearTalon->Set(Strafe);
-	}
-	else if (((Turn!=0)&&(Strafe==0))&&(Throttle!=0))
-	{
-		if (Turn < 0)
+	case DrivePrecise::ThrottleStatus::FOREWARD:
+		switch (DrivePrecise::turnStatus)
 		{
-			TurnDirection = 0;
-		}
-		else if (Turn > 0)
-		{
-			TurnDirection = 1;
-		}
-		if (Throttle > 0)
-		{
-			ThrottleDirection = 0;
-		}
-		else if (Throttle < 0)
-		{
-			ThrottleDirection = 1;
-		}
-		TurnFactor = (std::fabs(Turn)*MaxTurnMultiTask)*std::fabs(Throttle);
-		switch (ThrottleDirection)
-		{
-		case 0 :
-			switch (TurnDirection)
+		case DrivePrecise::TurnStatus::T_LEFT:
+			switch (DrivePrecise::strafeStatus)
 			{
-			case 0 :
-				m_pLeftFrontTalon->Set(Throttle-TurnFactor);
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(Throttle*Turn*Strafe);
+				m_pLeftRearTalon->Set(Throttle*Turn);
 				m_pRightFrontTalon->Set(Throttle);
-				m_pLeftRearTalon->Set(Throttle-TurnFactor);
+				m_pRightRearTalon->Set(Throttle*Strafe);
+				break;
+			case DrivePrecise::StrafeStatus::S_CENTER:
+				m_pLeftFrontTalon->Set(Throttle*Turn);
+				m_pLeftRearTalon->Set(Throttle*Turn);
+				m_pRightFrontTalon->Set(Throttle);
 				m_pRightRearTalon->Set(Throttle);
 				break;
-			case 1 :
-				m_pLeftFrontTalon->Set(Throttle);
-				m_pRightFrontTalon->Set(Throttle-TurnFactor);
-				m_pLeftRearTalon->Set(Throttle);
-				m_pRightRearTalon->Set(Throttle-TurnFactor);
-				break;
-			}
-			break;
-		case 1 :
-			switch (TurnDirection)
-			{
-			case 0 :
-				m_pLeftFrontTalon->Set(Throttle);
-				m_pRightFrontTalon->Set(Throttle+TurnFactor);
-				m_pLeftRearTalon->Set(Throttle);
-				m_pRightRearTalon->Set(Throttle+TurnFactor);
-				break;
-			case 1 :
-				m_pLeftFrontTalon->Set(Throttle+TurnFactor);
-				m_pRightFrontTalon->Set(Throttle);
-				m_pLeftRearTalon->Set(Throttle+TurnFactor);
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(Throttle*Turn);
+				m_pLeftRearTalon->Set(Throttle*Turn*Strafe);
+				m_pRightFrontTalon->Set(Throttle*Strafe);
 				m_pRightRearTalon->Set(Throttle);
 				break;
 			}
-			break;
-		}
-	}
-	else if (((Turn==0)&&(Strafe!=0))&&(Throttle!=0))
-	{
-		if (Strafe < 0)
-		{
-			StrafeDirection = 0;
-		}
-		else if (Strafe > 0)
-		{
-			StrafeDirection = 1;
-		}
-		if (Throttle > 0)
-		{
-			ThrottleDirection = 0;
-		}
-		else if (Throttle < 0)
-		{
-			ThrottleDirection = 1;
-		}
-		TurnFactor = (std::fabs(Strafe)*MaxTurnMultiTask)*std::fabs(Throttle);
-		switch (ThrottleDirection)
-		{
-		case 0 :
-			switch (StrafeDirection)
+		break;
+		case DrivePrecise::TurnStatus::T_CENTER:
+			switch (DrivePrecise::strafeStatus)
 			{
-			case 0 :
-				m_pLeftFrontTalon->Set(Throttle-StrafeFactor);
-				m_pRightFrontTalon->Set(Throttle);
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(Throttle*Strafe);
 				m_pLeftRearTalon->Set(Throttle);
-				m_pRightRearTalon->Set(Throttle-StrafeFactor);
+				m_pRightFrontTalon->Set(Throttle);
+				m_pRightRearTalon->Set(Throttle*Strafe);
 				break;
-			case 1 :
+			case DrivePrecise::StrafeStatus::S_CENTER:
 				m_pLeftFrontTalon->Set(Throttle);
-				m_pRightFrontTalon->Set(Throttle-StrafeFactor);
-				m_pLeftRearTalon->Set(Throttle-StrafeFactor);
+				m_pLeftRearTalon->Set(Throttle);
+				m_pRightFrontTalon->Set(Throttle);
+				m_pRightRearTalon->Set(Throttle);
+				break;
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(Throttle);
+				m_pLeftRearTalon->Set(Throttle*Strafe);
+				m_pRightFrontTalon->Set(Throttle*Strafe);
 				m_pRightRearTalon->Set(Throttle);
 				break;
 			}
-			break;
-		case 1 :
-			switch (StrafeDirection)
+		break;
+		case DrivePrecise::TurnStatus::T_RIGHT:
+			switch (DrivePrecise::strafeStatus)
 			{
-			case 0 :
-				m_pLeftFrontTalon->Set(Throttle+StrafeFactor);
-				m_pRightFrontTalon->Set(Throttle);
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(Throttle*Strafe);
 				m_pLeftRearTalon->Set(Throttle);
-				m_pRightRearTalon->Set(Throttle+StrafeFactor);
+				m_pRightFrontTalon->Set(Throttle*Turn);
+				m_pRightRearTalon->Set(Throttle*Turn*Strafe);
 				break;
-			case 1 :
+			case DrivePrecise::StrafeStatus::S_CENTER:
 				m_pLeftFrontTalon->Set(Throttle);
-				m_pRightFrontTalon->Set(Throttle+StrafeFactor);
-				m_pLeftRearTalon->Set(Throttle+StrafeFactor);
-				m_pRightRearTalon->Set(Throttle);
+				m_pLeftRearTalon->Set(Throttle);
+				m_pRightFrontTalon->Set(Throttle*Turn);
+				m_pRightRearTalon->Set(Throttle*Turn);
+				break;
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(Throttle);
+				m_pLeftRearTalon->Set(Throttle*Strafe);
+				m_pRightFrontTalon->Set(Throttle*Turn*Strafe);
+				m_pRightRearTalon->Set(Throttle*Turn);
 				break;
 			}
-			break;
+		break;
 		}
-	}
+	break;
+
+	case DrivePrecise::ThrottleStatus::CENTER:
+		switch (DrivePrecise::turnStatus)
+		{
+		case DrivePrecise::TurnStatus::T_LEFT:
+			switch (DrivePrecise::strafeStatus)
+			{
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(-StrafeRaw*Turn);
+				m_pLeftRearTalon->Set(StrafeRaw*Turn);
+				m_pRightFrontTalon->Set(StrafeRaw);
+				m_pRightRearTalon->Set(-StrafeRaw);
+				break;
+			case DrivePrecise::StrafeStatus::S_CENTER:
+				m_pLeftFrontTalon->Set(-TurnRaw);
+				m_pLeftRearTalon->Set(-TurnRaw);
+				m_pRightFrontTalon->Set(TurnRaw);
+				m_pRightRearTalon->Set(TurnRaw);
+				break;
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(StrafeRaw);
+				m_pLeftRearTalon->Set(-StrafeRaw);
+				m_pRightFrontTalon->Set(-StrafeRaw*Turn);
+				m_pRightRearTalon->Set(StrafeRaw*Turn);
+				break;
+			}
+		break;
+		case DrivePrecise::TurnStatus::T_CENTER:
+			switch (DrivePrecise::strafeStatus)
+			{
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(-StrafeRaw);
+				m_pLeftRearTalon->Set(StrafeRaw);
+				m_pRightFrontTalon->Set(StrafeRaw);
+				m_pRightRearTalon->Set(-StrafeRaw);
+				break;
+			case DrivePrecise::StrafeStatus::S_CENTER:
+				m_pLeftFrontTalon->Set(0);
+				m_pLeftRearTalon->Set(0);
+				m_pRightFrontTalon->Set(0);
+				m_pRightRearTalon->Set(0);
+				break;
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(StrafeRaw);
+				m_pLeftRearTalon->Set(-StrafeRaw);
+				m_pRightFrontTalon->Set(-StrafeRaw);
+				m_pRightRearTalon->Set(StrafeRaw);
+				break;
+			}
+		break;
+		case DrivePrecise::TurnStatus::T_RIGHT:
+			switch (DrivePrecise::strafeStatus)
+			{
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(-StrafeRaw);
+				m_pLeftRearTalon->Set(StrafeRaw);
+				m_pRightFrontTalon->Set(StrafeRaw*Turn);
+				m_pRightRearTalon->Set(-StrafeRaw*Turn);
+				break;
+			case DrivePrecise::StrafeStatus::S_CENTER:
+				m_pLeftFrontTalon->Set(TurnRaw);
+				m_pLeftRearTalon->Set(TurnRaw);
+				m_pRightFrontTalon->Set(-TurnRaw);
+				m_pRightRearTalon->Set(-TurnRaw);
+				break;
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(StrafeRaw);
+				m_pLeftRearTalon->Set(-StrafeRaw);
+				m_pRightFrontTalon->Set(-StrafeRaw*Turn);
+				m_pRightRearTalon->Set(StrafeRaw*Turn);
+				break;
+			}
+		break;
+		}
+	break;
+
+	case DrivePrecise::ThrottleStatus::BACKWARD:
+		switch (DrivePrecise::turnStatus)
+		{
+		case DrivePrecise::TurnStatus::T_LEFT:
+			switch (DrivePrecise::strafeStatus)
+			{
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(-Throttle*Turn);
+				m_pLeftRearTalon->Set(-Throttle*Turn*Strafe);
+				m_pRightFrontTalon->Set(-Throttle*Strafe);
+				m_pRightRearTalon->Set(-Throttle);
+				break;
+			case DrivePrecise::StrafeStatus::S_CENTER:
+				m_pLeftFrontTalon->Set(-Throttle*Turn);
+				m_pLeftRearTalon->Set(-Throttle*Turn);
+				m_pRightFrontTalon->Set(-Throttle);
+				m_pRightRearTalon->Set(-Throttle);
+				break;
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(-Throttle*Turn*Strafe);
+				m_pLeftRearTalon->Set(-Throttle*Turn);
+				m_pRightFrontTalon->Set(-Throttle);
+				m_pRightRearTalon->Set(-Throttle*Strafe);
+				break;
+			}
+		break;
+		case DrivePrecise::TurnStatus::T_CENTER:
+			switch (DrivePrecise::strafeStatus)
+			{
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(-Throttle);
+				m_pLeftRearTalon->Set(-Throttle*Strafe);
+				m_pRightFrontTalon->Set(-Throttle*Strafe);
+				m_pRightRearTalon->Set(-Throttle);
+				break;
+			case DrivePrecise::StrafeStatus::S_CENTER:
+				m_pLeftFrontTalon->Set(-Throttle);
+				m_pLeftRearTalon->Set(-Throttle);
+				m_pRightFrontTalon->Set(-Throttle);
+				m_pRightRearTalon->Set(-Throttle);
+				break;
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(-Throttle*Strafe);
+				m_pLeftRearTalon->Set(-Throttle);
+				m_pRightFrontTalon->Set(-Throttle);
+				m_pRightRearTalon->Set(-Throttle*Strafe);
+				break;
+			}
+		break;
+		case DrivePrecise::TurnStatus::T_RIGHT:
+			switch (DrivePrecise::strafeStatus)
+			{
+			case DrivePrecise::StrafeStatus::S_LEFT:
+				m_pLeftFrontTalon->Set(-Throttle);
+				m_pLeftRearTalon->Set(-Throttle*Strafe);
+				m_pRightFrontTalon->Set(-Throttle*Turn*Strafe);
+				m_pRightRearTalon->Set(-Throttle*Turn);
+				break;
+			case DrivePrecise::StrafeStatus::S_CENTER:
+				m_pLeftFrontTalon->Set(-Throttle);
+				m_pLeftRearTalon->Set(-Throttle);
+				m_pRightFrontTalon->Set(-Throttle*Turn);
+				m_pRightRearTalon->Set(-Throttle*Turn);
+				break;
+			case DrivePrecise::StrafeStatus::S_RIGHT:
+				m_pLeftFrontTalon->Set(-Throttle*Strafe);
+				m_pLeftRearTalon->Set(-Throttle);
+				m_pRightFrontTalon->Set(-Throttle*Turn);
+				m_pRightRearTalon->Set(-Throttle*Turn*Strafe);
+				break;
+			}
+		break;
+		}
+	break;
 }
-
-void DriveSystem::DriveAssist(float Turn, float Strafe, float Throttle)
-{
-
-}
-
-// Put methods for controlling this subsystem
-// here. Call these from Commands.

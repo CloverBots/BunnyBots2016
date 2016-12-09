@@ -1,4 +1,5 @@
 #include "DrivePrecise.h"
+#include <cmath>
 
 DrivePrecise::DrivePrecise()
 {
@@ -15,47 +16,89 @@ void DrivePrecise::Initialize()
 // Called repeatedly when this Command is scheduled to run
 void DrivePrecise::Execute()
 {
-	double xLeft;
-	double yLeft;
-	double leftTrigger;
-	double rightTrigger;
-	double xRight;
-	double yRight;
-	double TurnStatus; //Between -1 and 1. -1 is Left, 1 is Right.
-	double ThrottleStatus;
-	double StrafeStatus;
+	float xLeft;
+	float yLeft;
+	float leftTrigger;
+	float rightTrigger;
+	float xRight;
+	float yRight;
+	float TurnFactor; //Between -1 and 1. -1 is Left, 1 is Right.
+	float ThrottleFactor;
+	float StrafeFactor;
+	int ThrottleDirection;
+	int Turn;
+	ThrottleStatus throttleStatus;
+	TurnStatus turnStatus;
+	StrafeStatus strafeStatus;
 	Joystick* Controller = CommandBase::oi->Controller;
 	switch (driveMode)
 	{
 	case DriveMode::BASIC:
-			xLeft = Controller->GetRawAxis(0);
-			yLeft = Controller->GetRawAxis(1);
-			leftTrigger = -(Controller->GetRawAxis(2));
-			rightTrigger = Controller->GetRawAxis(3);
-
-			TurnStatus = leftTrigger + rightTrigger;
-			StrafeStatus = xLeft;
-			ThrottleStatus = yLeft;
-			CommandBase::driveSystem->DriveBasic(TurnStatus, StrafeStatus, ThrottleStatus);
-		if (Controller->GetRawButton(3)) {
-			driveMode = DriveMode::ASSISTED;
-		}
-		break;
-	case DriveMode::ASSISTED:
 		xLeft = Controller->GetRawAxis(0);
 		yLeft = Controller->GetRawAxis(1);
-		leftTrigger = -(Controller->GetRawAxis(2));
+		leftTrigger = Controller->GetRawAxis(2);
 		rightTrigger = Controller->GetRawAxis(3);
-		TurnStatus = leftTrigger + rightTrigger;
-		StrafeStatus = xLeft;
-		ThrottleStatus = yLeft;
-		CommandBase::driveSystem->DriveAssist(TurnStatus, StrafeStatus, ThrottleStatus);
-		if (Controller->GetRawButton(3))
+		xRight = Controller->GetRawAxis(4);
+		yRight = Controller->GetRawAxis(5);
+
+		if (yLeft > 0)
 		{
-			driveMode = DriveMode::BASIC;
+			throttleStatus = ThrottleStatus::FOREWARD;
+			ThrottleFactor = std::fabs(yLeft);
+		}
+		else if (yLeft == 0)
+		{
+			throttleStatus = ThrottleStatus::CENTER;
+			ThrottleFactor = 0;
+		}
+		else if (yLeft < 0)
+		{
+			throttleStatus = ThrottleStatus::BACKWARD;
+			ThrottleFactor = std::fabs(yLeft);
 		}
 
-		break;
+		if (leftTrigger > rightTrigger)
+		{
+			turnStatus = TurnStatus::T_LEFT;
+			TurnFactor = leftTrigger - rightTrigger;
+		}
+		else if (rightTrigger > leftTrigger)
+		{
+			turnStatus = TurnStatus::T_RIGHT;
+			TurnFactor = rightTrigger - leftTrigger;
+		}
+		else if (leftTrigger == rightTrigger)
+		{
+			turnStatus = TurnStatus::T_CENTER;
+			TurnFactor = 0;
+		}
+
+		if (xLeft > 0)
+		{
+			strafeStatus = StrafeStatus::S_RIGHT;
+			StrafeFactor = std::fabs(xLeft);
+		}
+		else if (xLeft == 0)
+		{
+			strafeStatus = StrafeStatus::S_CENTER;
+			StrafeFactor = 0;
+		}
+		else if (xLeft < 0)
+		{
+			strafeStatus = StrafeStatus::S_LEFT;
+			StrafeFactor = std::fabs(xLeft);
+		}
+
+//Thou shalt not cross this line
+
+		if (Controller->GetRawButton(3))
+		{
+			driveMode = DriveMode::ASSISTED;
+		}
+	break;
+	case DriveMode::ASSISTED:
+
+	break;
 	}
 }
 

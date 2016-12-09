@@ -4,6 +4,7 @@
 #include "Commands/Subsystem.h"
 #include "WPILib.h"
 #include "Talon.h"
+#include "DrivePrecise.h"
 
 class DriveSystem: public Subsystem
 {
@@ -15,7 +16,7 @@ private:
 public:
 	DriveSystem();
 	void InitDefaultCommand();
-	void DriveBasic(float Turn, float Strafe, float Throttle);
+	void DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw);
 	void DriveAssist(float Turn, float Strafe, float Throttle);
 };
 
