@@ -12,6 +12,7 @@ private:
 	enum DriveMode
 	{
 		BASIC,
+		CLASSIC,
 		ASSISTED
 	};
 

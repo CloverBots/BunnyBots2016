@@ -24,7 +24,7 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 	float Throttle = ThrottleRaw;
 	float Turn = (1-TurnRaw);
 	float Strafe = (1-StrafeRaw);
-	float LimitFactor = 0.5; //Limits how much you can slow one set of wheels
+	//float LimitFactor = 0.5; //Limits how much you can slow one set of wheels
 	switch (DrivePrecise::throttleStatus)
 	{
 	case DrivePrecise::ThrottleStatus::FOREWARD:

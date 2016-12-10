@@ -10,7 +10,7 @@ DrivePrecise::DrivePrecise()
 // Called just before this Command runs the first time
 void DrivePrecise::Initialize()
 {
-
+	driveMode = DriveMode::BASIC;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -88,9 +88,73 @@ void DrivePrecise::Execute()
 			strafeStatus = StrafeStatus::S_LEFT;
 			StrafeFactor = std::fabs(xLeft);
 		}
+		driveSystem->DriveBasic(TurnFactor, StrafeFactor, ThrottleFactor);
 
 //Thou shalt not cross this line
 
+		if (Controller->GetRawButton(3))
+		{
+			driveMode = DriveMode::CLASSIC;
+		}
+	break;
+
+	case DriveMode::CLASSIC:
+		xLeft = Controller->GetRawAxis(0);
+		yLeft = Controller->GetRawAxis(1);
+		leftTrigger = Controller->GetRawAxis(2);
+		rightTrigger = Controller->GetRawAxis(3);
+		xRight = Controller->GetRawAxis(4);
+		yRight = Controller->GetRawAxis(5);
+
+		if (yLeft > 0)
+		{
+			throttleStatus = ThrottleStatus::FOREWARD;
+			ThrottleFactor = std::fabs(yLeft);
+		}
+		else if (yLeft == 0)
+		{
+			throttleStatus = ThrottleStatus::CENTER;
+			ThrottleFactor = 0;
+		}
+		else if (yLeft < 0)
+		{
+			throttleStatus = ThrottleStatus::BACKWARD;
+			ThrottleFactor = std::fabs(yLeft);
+		}
+
+		if (xRight < 0)
+		{
+			turnStatus = TurnStatus::T_LEFT;
+			TurnFactor = std::fabs(yRight);
+		}
+		else if (rightTrigger > leftTrigger)
+		{
+			turnStatus = TurnStatus::T_RIGHT;
+			TurnFactor = std::fabs(yRight);
+		}
+		else if (leftTrigger == rightTrigger)
+		{
+			turnStatus = TurnStatus::T_CENTER;
+			TurnFactor = 0;
+		}
+
+		if (xLeft > 0)
+		{
+			strafeStatus = StrafeStatus::S_RIGHT;
+			StrafeFactor = std::fabs(xLeft);
+		}
+		else if (xLeft == 0)
+		{
+			strafeStatus = StrafeStatus::S_CENTER;
+			StrafeFactor = 0;
+		}
+		else if (xLeft < 0)
+		{
+			strafeStatus = StrafeStatus::S_LEFT;
+			StrafeFactor = std::fabs(xLeft);
+		}
+
+//Thou shalt not cross this line either
 		if (Controller->GetRawButton(3))
 		{
 			driveMode = DriveMode::ASSISTED;
@@ -98,6 +162,11 @@ void DrivePrecise::Execute()
 	break;
 	case DriveMode::ASSISTED:
 
+//Thou knowest what is up
+		if (Controller->GetRawButton(3))
+		{
+			driveMode = DriveMode::BASIC;
+		}
 	break;
 	}
 }
