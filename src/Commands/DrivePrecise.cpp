@@ -11,6 +11,7 @@ DrivePrecise::DrivePrecise()
 void DrivePrecise::Initialize()
 {
 	driveMode = DriveMode::BASIC;
+	SmartDashboard::PutString("Drive Mode", "Basic");
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -95,6 +96,7 @@ void DrivePrecise::Execute()
 		if (Controller->GetRawButton(3))
 		{
 			driveMode = DriveMode::CLASSIC;
+			SmartDashboard::PutString("Drive Mode", "Classic");
 		}
 	break;
 
@@ -157,16 +159,17 @@ void DrivePrecise::Execute()
 //Thou shalt not cross this line either
 		if (Controller->GetRawButton(3))
 		{
-			driveMode = DriveMode::ASSISTED;
+			driveMode = DriveMode::BASIC;
+			SmartDashboard::PutString("Drive Mode", "Basic");
 		}
 	break;
-	case DriveMode::ASSISTED:
+	//case DriveMode::ASSISTED:
 
 //Thou knowest what is up
-		if (Controller->GetRawButton(3))
-		{
-			driveMode = DriveMode::BASIC;
-		}
+		//if (Controller->GetRawButton(3))
+		//{
+			//driveMode = DriveMode::BASIC;
+		//}
 	break;
 	}
 }
