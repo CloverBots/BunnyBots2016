@@ -20,4 +20,15 @@
 //const int RANGE_FINDER_PORT = 1;
 //const int RANGE_FINDER_MODULE = 1;
 
+struct RobotMap
+{
+
+	const static u_int32_t
+		FRONT_LEFT_MOTOR_PORT = 0,
+		REAR_LEFT_MOTOR_PORT = 1,
+		FRONT_RIGHT_MOTOR_PORT = 2,
+		REAR_RIGHT_MOTOR_PORT = 3;
+
+};
+
 #endif
