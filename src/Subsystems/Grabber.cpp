@@ -22,12 +22,12 @@ void Grabber::InitDefaultCommand()
 
 void Grabber::SetGrabberSpeed(float speed)
 {
-
+	grabberMotor->Set(speed);
 }
 
 void Grabber::SetArmSpeed(float speed)
 {
-
+	m_pPIDController->SetSetpoint(speed);
 }
 
 

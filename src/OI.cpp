@@ -2,7 +2,7 @@
 
 OI::OI()
 {
-	m_pArmJoystick = new Joystick(0);
+	m_pArmJoystick = new Joystick(1);
 	m_pAButton = new JoystickButton(m_pArmJoystick(), 0);
 
 	m_pAButton->WhenPressed(new SetGrabberSpeed(1.0f));
