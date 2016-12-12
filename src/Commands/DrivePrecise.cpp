@@ -12,6 +12,7 @@ void DrivePrecise::Initialize()
 {
 	driveMode = DriveMode::BASIC;
 	SmartDashboard::PutString("Drive Mode", "Basic");
+
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -26,12 +27,10 @@ void DrivePrecise::Execute()
 	float TurnFactor; //Between -1 and 1. -1 is Left, 1 is Right.
 	float ThrottleFactor;
 	float StrafeFactor;
-	int ThrottleDirection;
+	int Throttle;
 	int Turn;
-	ThrottleStatus throttleStatus;
-	TurnStatus turnStatus;
-	StrafeStatus strafeStatus;
-	Joystick* Controller = CommandBase::oi->Controller;
+	int Strafe;
+	Joystick* Controller = CommandBase::oi->GetJoystick();
 	switch (driveMode)
 	{
 	case DriveMode::BASIC:
@@ -42,54 +41,54 @@ void DrivePrecise::Execute()
 		xRight = Controller->GetRawAxis(4);
 		yRight = Controller->GetRawAxis(5);
 
-		if (yLeft > 0)
+		if (yLeft < 0)
 		{
-			throttleStatus = ThrottleStatus::FOREWARD;
+			Throttle = 0;
 			ThrottleFactor = std::fabs(yLeft);
 		}
 		else if (yLeft == 0)
 		{
-			throttleStatus = ThrottleStatus::CENTER;
+			Throttle = 1;
 			ThrottleFactor = 0;
 		}
-		else if (yLeft < 0)
+		else if (yLeft > 0)
 		{
-			throttleStatus = ThrottleStatus::BACKWARD;
+			Throttle = 2;
 			ThrottleFactor = std::fabs(yLeft);
 		}
 
 		if (leftTrigger > rightTrigger)
 		{
-			turnStatus = TurnStatus::T_LEFT;
+			Turn = 1;
 			TurnFactor = leftTrigger - rightTrigger;
 		}
 		else if (rightTrigger > leftTrigger)
 		{
-			turnStatus = TurnStatus::T_RIGHT;
+			Turn = 0;
 			TurnFactor = rightTrigger - leftTrigger;
 		}
 		else if (leftTrigger == rightTrigger)
 		{
-			turnStatus = TurnStatus::T_CENTER;
+			Turn = 2;
 			TurnFactor = 0;
 		}
 
 		if (xLeft > 0)
 		{
-			strafeStatus = StrafeStatus::S_RIGHT;
+			Strafe = 2;
 			StrafeFactor = std::fabs(xLeft);
 		}
 		else if (xLeft == 0)
 		{
-			strafeStatus = StrafeStatus::S_CENTER;
+			Strafe = 1;
 			StrafeFactor = 0;
 		}
 		else if (xLeft < 0)
 		{
-			strafeStatus = StrafeStatus::S_LEFT;
+			Strafe = 0;
 			StrafeFactor = std::fabs(xLeft);
 		}
-		driveSystem->DriveBasic(TurnFactor, StrafeFactor, ThrottleFactor);
+		driveSystem->DriveBasic(TurnFactor, StrafeFactor, ThrottleFactor, Turn, Strafe, Throttle);
 
 //Thou shalt not cross this line
 
@@ -108,53 +107,54 @@ void DrivePrecise::Execute()
 		xRight = Controller->GetRawAxis(4);
 		yRight = Controller->GetRawAxis(5);
 
-		if (yLeft > 0)
+		if (yLeft < 0)
 		{
-			throttleStatus = ThrottleStatus::FOREWARD;
+			Throttle = 0;
 			ThrottleFactor = std::fabs(yLeft);
 		}
 		else if (yLeft == 0)
 		{
-			throttleStatus = ThrottleStatus::CENTER;
+			Throttle = 1;
 			ThrottleFactor = 0;
 		}
-		else if (yLeft < 0)
+		else if (yLeft > 0)
 		{
-			throttleStatus = ThrottleStatus::BACKWARD;
+			Throttle = 2;
 			ThrottleFactor = std::fabs(yLeft);
 		}
 
 		if (xRight < 0)
 		{
-			turnStatus = TurnStatus::T_LEFT;
-			TurnFactor = std::fabs(yRight);
+			Turn = 0;
+			TurnFactor = std::fabs(xRight);
 		}
-		else if (rightTrigger > leftTrigger)
+		else if (xRight > 0)
 		{
-			turnStatus = TurnStatus::T_RIGHT;
-			TurnFactor = std::fabs(yRight);
+			Turn = 2;
+			TurnFactor = std::fabs(xRight);
 		}
-		else if (leftTrigger == rightTrigger)
+		else if (xRight==0)
 		{
-			turnStatus = TurnStatus::T_CENTER;
+			Turn = 1;
 			TurnFactor = 0;
 		}
 
 		if (xLeft > 0)
 		{
-			strafeStatus = StrafeStatus::S_RIGHT;
+			Strafe = 2;
 			StrafeFactor = std::fabs(xLeft);
 		}
 		else if (xLeft == 0)
 		{
-			strafeStatus = StrafeStatus::S_CENTER;
+			Strafe = 1;
 			StrafeFactor = 0;
 		}
 		else if (xLeft < 0)
 		{
-			strafeStatus = StrafeStatus::S_LEFT;
+			Strafe = 0;
 			StrafeFactor = std::fabs(xLeft);
 		}
+		driveSystem->DriveBasic(TurnFactor, StrafeFactor, ThrottleFactor, Turn, Strafe, Throttle);
 
 //Thou shalt not cross this line either
 		if (Controller->GetRawButton(3))
@@ -170,7 +170,7 @@ void DrivePrecise::Execute()
 		//{
 			//driveMode = DriveMode::BASIC;
 		//}
-	break;
+	//break;
 	}
 }
 

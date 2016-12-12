@@ -1,4 +1,3 @@
-#include "DrivePrecise.h"
 #include <cmath>
 #include "DriveSystem.h"
 #include "../RobotMap.h"
@@ -19,33 +18,33 @@ void DriveSystem::InitDefaultCommand()
 	// Set the default command for a subsystem here.
 	void SetDefaultCommand(new DrivePrecise());
 }
-void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
+void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw, int TurnDir, int StrafeDir, int ThrottleDir)
 {
 	float Throttle = ThrottleRaw;
 	float Turn = (1-TurnRaw);
 	float Strafe = (1-StrafeRaw);
 	//float LimitFactor = 0.5; //Limits how much you can slow one set of wheels
-	switch (DrivePrecise::throttleStatus)
+	switch (ThrottleDir)
 	{
-	case DrivePrecise::ThrottleStatus::FOREWARD:
-		switch (DrivePrecise::turnStatus)
+	case 0:
+		switch (TurnDir)
 		{
-		case DrivePrecise::TurnStatus::T_LEFT:
-			switch (DrivePrecise::strafeStatus)
+		case 0:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(Throttle*Turn*Strafe);
 				m_pLeftRearTalon->Set(Throttle*Turn);
 				m_pRightFrontTalon->Set(Throttle);
 				m_pRightRearTalon->Set(Throttle*Strafe);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(Throttle*Turn);
 				m_pLeftRearTalon->Set(Throttle*Turn);
 				m_pRightFrontTalon->Set(Throttle);
 				m_pRightRearTalon->Set(Throttle);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(Throttle*Turn);
 				m_pLeftRearTalon->Set(Throttle*Turn*Strafe);
 				m_pRightFrontTalon->Set(Throttle*Strafe);
@@ -53,22 +52,22 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 				break;
 			}
 		break;
-		case DrivePrecise::TurnStatus::T_CENTER:
-			switch (DrivePrecise::strafeStatus)
+		case 1:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(Throttle*Strafe);
 				m_pLeftRearTalon->Set(Throttle);
 				m_pRightFrontTalon->Set(Throttle);
 				m_pRightRearTalon->Set(Throttle*Strafe);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(Throttle);
 				m_pLeftRearTalon->Set(Throttle);
 				m_pRightFrontTalon->Set(Throttle);
 				m_pRightRearTalon->Set(Throttle);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(Throttle);
 				m_pLeftRearTalon->Set(Throttle*Strafe);
 				m_pRightFrontTalon->Set(Throttle*Strafe);
@@ -76,22 +75,22 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 				break;
 			}
 		break;
-		case DrivePrecise::TurnStatus::T_RIGHT:
-			switch (DrivePrecise::strafeStatus)
+		case 2:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(Throttle*Strafe);
 				m_pLeftRearTalon->Set(Throttle);
 				m_pRightFrontTalon->Set(Throttle*Turn);
 				m_pRightRearTalon->Set(Throttle*Turn*Strafe);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(Throttle);
 				m_pLeftRearTalon->Set(Throttle);
 				m_pRightFrontTalon->Set(Throttle*Turn);
 				m_pRightRearTalon->Set(Throttle*Turn);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(Throttle);
 				m_pLeftRearTalon->Set(Throttle*Strafe);
 				m_pRightFrontTalon->Set(Throttle*Turn*Strafe);
@@ -102,25 +101,25 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 		}
 	break;
 
-	case DrivePrecise::ThrottleStatus::CENTER:
-		switch (DrivePrecise::turnStatus)
+	case 1:
+		switch (TurnDir)
 		{
-		case DrivePrecise::TurnStatus::T_LEFT:
-			switch (DrivePrecise::strafeStatus)
+		case 0:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(-StrafeRaw*Turn);
 				m_pLeftRearTalon->Set(StrafeRaw*Turn);
 				m_pRightFrontTalon->Set(StrafeRaw);
 				m_pRightRearTalon->Set(-StrafeRaw);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(-TurnRaw);
 				m_pLeftRearTalon->Set(-TurnRaw);
 				m_pRightFrontTalon->Set(TurnRaw);
 				m_pRightRearTalon->Set(TurnRaw);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(StrafeRaw);
 				m_pLeftRearTalon->Set(-StrafeRaw);
 				m_pRightFrontTalon->Set(-StrafeRaw*Turn);
@@ -128,22 +127,22 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 				break;
 			}
 		break;
-		case DrivePrecise::TurnStatus::T_CENTER:
-			switch (DrivePrecise::strafeStatus)
+		case 1:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(-StrafeRaw);
 				m_pLeftRearTalon->Set(StrafeRaw);
 				m_pRightFrontTalon->Set(StrafeRaw);
 				m_pRightRearTalon->Set(-StrafeRaw);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(0);
 				m_pLeftRearTalon->Set(0);
 				m_pRightFrontTalon->Set(0);
 				m_pRightRearTalon->Set(0);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(StrafeRaw);
 				m_pLeftRearTalon->Set(-StrafeRaw);
 				m_pRightFrontTalon->Set(-StrafeRaw);
@@ -151,22 +150,22 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 				break;
 			}
 		break;
-		case DrivePrecise::TurnStatus::T_RIGHT:
-			switch (DrivePrecise::strafeStatus)
+		case 2:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(-StrafeRaw);
 				m_pLeftRearTalon->Set(StrafeRaw);
 				m_pRightFrontTalon->Set(StrafeRaw*Turn);
 				m_pRightRearTalon->Set(-StrafeRaw*Turn);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(TurnRaw);
 				m_pLeftRearTalon->Set(TurnRaw);
 				m_pRightFrontTalon->Set(-TurnRaw);
 				m_pRightRearTalon->Set(-TurnRaw);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(StrafeRaw);
 				m_pLeftRearTalon->Set(-StrafeRaw);
 				m_pRightFrontTalon->Set(-StrafeRaw*Turn);
@@ -177,25 +176,25 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 		}
 	break;
 
-	case DrivePrecise::ThrottleStatus::BACKWARD:
-		switch (DrivePrecise::turnStatus)
+	case 2:
+		switch (TurnDir)
 		{
-		case DrivePrecise::TurnStatus::T_LEFT:
-			switch (DrivePrecise::strafeStatus)
+		case 0:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(-Throttle*Turn);
 				m_pLeftRearTalon->Set(-Throttle*Turn*Strafe);
 				m_pRightFrontTalon->Set(-Throttle*Strafe);
 				m_pRightRearTalon->Set(-Throttle);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(-Throttle*Turn);
 				m_pLeftRearTalon->Set(-Throttle*Turn);
 				m_pRightFrontTalon->Set(-Throttle);
 				m_pRightRearTalon->Set(-Throttle);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(-Throttle*Turn*Strafe);
 				m_pLeftRearTalon->Set(-Throttle*Turn);
 				m_pRightFrontTalon->Set(-Throttle);
@@ -203,22 +202,22 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 				break;
 			}
 		break;
-		case DrivePrecise::TurnStatus::T_CENTER:
-			switch (DrivePrecise::strafeStatus)
+		case 1:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(-Throttle);
 				m_pLeftRearTalon->Set(-Throttle*Strafe);
 				m_pRightFrontTalon->Set(-Throttle*Strafe);
 				m_pRightRearTalon->Set(-Throttle);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(-Throttle);
 				m_pLeftRearTalon->Set(-Throttle);
 				m_pRightFrontTalon->Set(-Throttle);
 				m_pRightRearTalon->Set(-Throttle);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(-Throttle*Strafe);
 				m_pLeftRearTalon->Set(-Throttle);
 				m_pRightFrontTalon->Set(-Throttle);
@@ -226,22 +225,22 @@ void DriveSystem::DriveBasic(float TurnRaw, float StrafeRaw, float ThrottleRaw)
 				break;
 			}
 		break;
-		case DrivePrecise::TurnStatus::T_RIGHT:
-			switch (DrivePrecise::strafeStatus)
+		case 2:
+			switch (StrafeDir)
 			{
-			case DrivePrecise::StrafeStatus::S_LEFT:
+			case 0:
 				m_pLeftFrontTalon->Set(-Throttle);
 				m_pLeftRearTalon->Set(-Throttle*Strafe);
 				m_pRightFrontTalon->Set(-Throttle*Turn*Strafe);
 				m_pRightRearTalon->Set(-Throttle*Turn);
 				break;
-			case DrivePrecise::StrafeStatus::S_CENTER:
+			case 1:
 				m_pLeftFrontTalon->Set(-Throttle);
 				m_pLeftRearTalon->Set(-Throttle);
 				m_pRightFrontTalon->Set(-Throttle*Turn);
 				m_pRightRearTalon->Set(-Throttle*Turn);
 				break;
-			case DrivePrecise::StrafeStatus::S_RIGHT:
+			case 2:
 				m_pLeftFrontTalon->Set(-Throttle*Strafe);
 				m_pLeftRearTalon->Set(-Throttle);
 				m_pRightFrontTalon->Set(-Throttle*Turn);
