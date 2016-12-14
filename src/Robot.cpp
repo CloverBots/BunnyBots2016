@@ -2,20 +2,27 @@
 #include "Commands/Command.h"
 #include "Commands/ExampleCommand.h"
 #include "CommandBase.h"
+#include "Commands/FuncCommand.h"
 
 class Robot: public IterativeRobot
 {
 private:
-	std::unique_ptr<Command> autonomousCommand;
+
+	Command* autonomousCommand;
 	SendableChooser *chooser;
 
 	void RobotInit()
 	{
 		CommandBase::init();
 		chooser = new SendableChooser();
-		chooser->AddDefault("Default Auto", new ExampleCommand());
+		chooser->AddDefault("Default Auto", new FuncCommand(std::bind(&Robot::DoSomething, this, 1.0f))/*ExampleCommand()*/);
 		//chooser->AddObject("My Auto", new MyAutoCommand());
 		SmartDashboard::PutData("Auto Modes", chooser);
+	}
+
+	void DoSomething(float something)
+	{
+		// do something
 	}
 
 	/**
@@ -50,7 +57,7 @@ private:
 			autonomousCommand.reset(new ExampleCommand());
 		} */
 
-		autonomousCommand.reset((Command *)chooser->GetSelected());
+		autonomousCommand = (Command *)chooser->GetSelected();
 
 		if (autonomousCommand != NULL)
 			autonomousCommand->Start();
