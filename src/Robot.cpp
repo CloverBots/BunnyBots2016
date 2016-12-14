@@ -2,6 +2,7 @@
 #include "Commands/Command.h"
 #include "Commands/ExampleCommand.h"
 #include "CommandBase.h"
+#include "Commands/FuncCommand.h"
 
 class Robot: public IterativeRobot
 {
@@ -14,9 +15,14 @@ private:
 	{
 		CommandBase::init();
 		chooser = new SendableChooser();
-		chooser->AddDefault("Default Auto", new ExampleCommand());
+		chooser->AddDefault("Default Auto", new FuncCommand(std::bind(&Robot::DoSomething, this, 1.0f))/*ExampleCommand()*/);
 		//chooser->AddObject("My Auto", new MyAutoCommand());
 		SmartDashboard::PutData("Auto Modes", chooser);
+	}
+
+	void DoSomething(float something)
+	{
+		// do something
 	}
 
 	/**
