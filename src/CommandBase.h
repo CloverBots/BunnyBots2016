@@ -3,7 +3,7 @@
 
 #include <string>
 #include "Commands/Command.h"
-#include "Subsystems/ExampleSubsystem.h"
+#include "Subsystems/nerfshooter.h"
 #include "OI.h"
 #include "WPILib.h"
 
@@ -19,7 +19,7 @@ public:
 	CommandBase();
 	static void init();
 	// Create a single static instance of all of your subsystems
-	static std::unique_ptr<ExampleSubsystem> examplesubsystem;
+	static std::unique_ptr<nerfshooter> nerfsubsystem;
 	static std::unique_ptr<OI> oi;
 };
 

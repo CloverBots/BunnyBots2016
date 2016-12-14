@@ -1,9 +1,9 @@
 #include "CommandBase.h"
-#include "Subsystems/ExampleSubsystem.h"
+#include "Subsystems/nerfshooter.h"
 #include "Commands/Scheduler.h"
 
 // Initialize a single static instance of all of your subsystems to NULL
-std::unique_ptr<ExampleSubsystem> CommandBase::examplesubsystem;
+std::unique_ptr<nerfshooter> CommandBase::nerfsubsystem;
 std::unique_ptr<OI> CommandBase::oi;
 
 CommandBase::CommandBase(const std::string &name) :
@@ -21,7 +21,7 @@ void CommandBase::init()
 {
 	// Create a single static instance of all of your subsystems. The following
 	// line should be repeated for each subsystem in the project.
-	examplesubsystem.reset(new ExampleSubsystem());
+	nerfsubsystem.reset(new nerfshooter());
 
 	oi.reset(new OI());
 }

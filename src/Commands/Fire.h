@@ -1,13 +1,13 @@
-#ifndef EXAMPLE_COMMAND_H
-#define EXAMPLE_COMMAND_H
+#ifndef Fire_H
+#define Fire_H
 
 #include "../CommandBase.h"
 #include "WPILib.h"
 
-class ExampleCommand: public CommandBase
+class Fire: public CommandBase
 {
 public:
-	ExampleCommand();
+	Fire();
 	void Initialize();
 	void Execute();
 	bool IsFinished();
