@@ -11,13 +11,10 @@ private:
 	Joystick* pStick1;
 	Joystick* pStick2;
 
-<<<<<<< HEAD
 	JoystickButton* aButton;
 
 	//LeftTrigger* leftTrigger;
 
-=======
->>>>>>> origin/master
 public:
 	OI();
 	~OI();

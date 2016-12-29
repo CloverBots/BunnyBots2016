@@ -16,26 +16,12 @@ void nerfshooter::InitDefaultCommand()
 	firewheels->Set(0);
 }
 
-<<<<<<< HEAD
 void nerfshooter::SetWheelSpeed(float speed){
 	firewheels->Set(speed * WHEEL_POWER_DOWNSCALE);
 }
 
 void nerfshooter::SetShooterSpeed(float speed){
 	fire->Set(speed * FIRE_POWER_DOWNSCALE);
-=======
-void nerfshooter::Fire()
-{
-	fire->Set(1);
-}
-
-void nerfshooter::FireWheels(){
-	firewheels->Set(1);
-}
-
-void nerfshooter::SetWheelSpeed(float speed){
-	firewheels->Set(speed);
->>>>>>> origin/master
 }
 
 // Put methods for controlling this subsystem

@@ -1,26 +1,15 @@
 #include "Fire.h"
 
-<<<<<<< HEAD
 Fire::Fire(float speed) : m_speed(speed)
 {
 	// Use Requires() here to declare subsystem dependencies
 	Requires(CommandBase::nerfsubsystem.get());
-=======
-Fire::Fire()
-{
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(chassis);
->>>>>>> origin/master
 }
 
 // Called just before this Command runs the first time
 void Fire::Initialize()
 {
-<<<<<<< HEAD
 	CommandBase::nerfsubsystem->SetShooterSpeed(m_speed);
-=======
-	CommandBase::nerfsubsystem->Fire();
->>>>>>> origin/master
 }
 
 // Called repeatedly when this Command is scheduled to run

@@ -15,11 +15,6 @@ private:
 	Talon* m_pFrontRightMotor;
 	Talon* m_pRearRightMotor;
 
-<<<<<<< HEAD
-=======
-	RobotDrive* m_pRobotDrive;
-
->>>>>>> origin/master
 	float m_xSpeed;
 	float m_ySpeed;
 	float m_rotSpeed;

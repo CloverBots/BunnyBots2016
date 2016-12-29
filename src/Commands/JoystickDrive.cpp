@@ -17,12 +17,8 @@ void JoystickDrive::Initialize()
 void JoystickDrive::Execute()
 {
 	CommandBase::pDriveSystem->Drive(
-<<<<<<< HEAD
 		(CommandBase::oi->GetStick1()->GetRawAxis(3) - 0.5f) * 2.0f -
 		(CommandBase::oi->GetStick1()->GetRawAxis(2) - 0.5f) * 2.0f,
-=======
-		CommandBase::oi->GetStick1()->GetRawAxis(0),
->>>>>>> origin/master
 		CommandBase::oi->GetStick1()->GetRawAxis(1),
 		CommandBase::oi->GetStick1()->GetRawAxis(4));
 }
@@ -36,10 +32,6 @@ bool JoystickDrive::IsFinished()
 // Called once after isFinished returns true
 void JoystickDrive::End()
 {
-<<<<<<< HEAD
-=======
-	CommandBase::pDriveSystem->Drive(0.0f, 0.0f, 0.0f);
->>>>>>> origin/master
 }
 
 // Called when another command which requires one or more of the same
