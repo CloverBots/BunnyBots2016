@@ -1,21 +1,25 @@
 #include "WPILib.h"
 #include "Commands/Command.h"
-#include "Commands/ExampleCommand.h"
 #include "CommandBase.h"
+#include "Commands/FuncCommand.h"
 
 class Robot: public IterativeRobot
 {
 private:
-	std::unique_ptr<Command> autonomousCommand;
+
+	Command* autonomousCommand;
 	SendableChooser *chooser;
 
 	void RobotInit()
 	{
 		CommandBase::init();
 		chooser = new SendableChooser();
-		chooser->AddDefault("Default Auto", new ExampleCommand());
+		//chooser->AddDefault("Default Auto", new FuncCommand(std::bind(&Robot::DoSomething, this, 1.0f)));
 		//chooser->AddObject("My Auto", new MyAutoCommand());
 		SmartDashboard::PutData("Auto Modes", chooser);
+		SmartDashboard::PutNumber("P", 0.0f);
+		SmartDashboard::PutNumber("I", 0.0f);
+		SmartDashboard::PutNumber("D", 0.0f);
 	}
 
 	/**
@@ -25,6 +29,7 @@ private:
      */
 	void DisabledInit()
 	{
+		CommandBase::grabber->SetPIDEnabled(false);
 	}
 
 	void DisabledPeriodic()
@@ -50,7 +55,7 @@ private:
 			autonomousCommand.reset(new ExampleCommand());
 		} */
 
-		autonomousCommand.reset((Command *)chooser->GetSelected());
+		autonomousCommand = (Command *)chooser->GetSelected();
 
 		if (autonomousCommand != NULL)
 			autonomousCommand->Start();
@@ -67,6 +72,7 @@ private:
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
+		CommandBase::grabber->SetPIDEnabled(true);
 		if (autonomousCommand != NULL)
 			autonomousCommand->Cancel();
 	}

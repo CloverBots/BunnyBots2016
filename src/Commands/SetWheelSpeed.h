@@ -1,13 +1,15 @@
-#ifndef EXAMPLE_COMMAND_H
-#define EXAMPLE_COMMAND_H
+#ifndef SetWheelSpeed_H
+#define SetWheelSpeed_H
 
 #include "../CommandBase.h"
 #include "WPILib.h"
 
-class ExampleCommand: public CommandBase
+class SetWheelSpeed: public CommandBase
 {
+private:
+	float speed;
 public:
-	ExampleCommand();
+	SetWheelSpeed(float speed);
 	void Initialize();
 	void Execute();
 	bool IsFinished();
