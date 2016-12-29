@@ -14,12 +14,21 @@ private:
 	{
 		CommandBase::init();
 		chooser = new SendableChooser();
+<<<<<<< HEAD
 		//chooser->AddDefault("Default Auto", new FuncCommand(std::bind(&Robot::DoSomething, this, 1.0f)));
+=======
+		chooser->AddDefault("Default Auto", new FuncCommand(std::bind(&Robot::DoSomething, this, 1.0f))/*ExampleCommand()*/);
+>>>>>>> origin/master
 		//chooser->AddObject("My Auto", new MyAutoCommand());
 		SmartDashboard::PutData("Auto Modes", chooser);
 		SmartDashboard::PutNumber("P", 0.0f);
 		SmartDashboard::PutNumber("I", 0.0f);
 		SmartDashboard::PutNumber("D", 0.0f);
+	}
+
+	void DoSomething(float something)
+	{
+		// do something
 	}
 
 	/**

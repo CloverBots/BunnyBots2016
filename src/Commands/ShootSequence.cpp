@@ -6,5 +6,9 @@ ShootSequence::ShootSequence()
 {
 	AddSequential(new SetWheelSpeed(1.0f));
 	AddSequential(new DelayCommand(0.5f));
+<<<<<<< HEAD
 	AddSequential(new Fire(1.0f));
+=======
+	AddSequential(new Fire());
+>>>>>>> origin/master
 }

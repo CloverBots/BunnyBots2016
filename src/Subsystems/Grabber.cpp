@@ -5,6 +5,7 @@
 Grabber::Grabber() :
 		Subsystem("Grabber")
 {
+<<<<<<< HEAD
 	grabberTalon = new CANTalon(RobotMap::GRABBER_CAN_TALON);
 	rollerTalon = new Talon(RobotMap::ROLLER_TALON);
 	grabberSource = new CANPIDSource(grabberTalon, m_ENCODER_RATE);
@@ -12,6 +13,13 @@ Grabber::Grabber() :
 	grabberController->SetOutputRange(m_OUTPUT_RANGE_LOW, m_OUTPUT_RANGE_HIGH);
 	lowLimit = new DigitalInput(RobotMap::GRABBER_LOW_LIMIT);
 	highLimit = new DigitalInput(RobotMap::GRABBER_HIGH_LIMIT);
+=======
+	grabberTalon = new Talon(RobotMap::GRABBER_TALON);
+	rollerTalon = new Talon(RobotMap::ROLLER_TALON);
+	grabberEncoder = new Encoder(RobotMap::GRABBER_ENCODER_A, RobotMap::GRABBER_ENCODER_B,
+								false, Encoder::EncodingType::k4X);
+	grabberController = new PIDController(m_P, m_I, m_D, grabberEncoder, grabberTalon);
+>>>>>>> origin/master
 }
 
 void Grabber::InitDefaultCommand()
@@ -21,6 +29,7 @@ void Grabber::InitDefaultCommand()
 
 void Grabber::SetLiftSpeed(float speed)
 {
+<<<<<<< HEAD
 	float scaledSpeed = speed * m_SPEED_SCALE;
 
 	if (!lowLimit->Get())
@@ -51,12 +60,16 @@ void Grabber::SetLiftSpeed(float speed)
 	}
 
 	SmartDashboard::PutNumber("Grabber Speed", grabberController->Get());
+=======
+	grabberController->SetSetpoint(speed);
+>>>>>>> origin/master
 }
 
 void Grabber::SetRollerSpeed(float speed)
 {
 	rollerTalon->Set(speed);
 }
+<<<<<<< HEAD
 
 void Grabber::SetPIDEnabled(bool enabled)
 {
@@ -72,3 +85,5 @@ void Grabber::SetPID(float p, float i, float d)
 {
 	grabberController->SetPID(p, i, d);
 }
+=======
+>>>>>>> origin/master

@@ -6,6 +6,7 @@
 struct RobotMap
 {
 	static const uint32_t
+<<<<<<< HEAD
 		LEFT_FRONT_TALON = 7,
 		LEFT_REAR_TALON = 6,
 		RIGHT_FRONT_TALON = 3,
@@ -19,6 +20,19 @@ struct RobotMap
 		GRABBER_LOW_LIMIT = 1,
 		GRABBER_HIGH_LIMIT = 0,
 		GRABBER_CAN_TALON = 0;
+=======
+		LEFT_FRONT_TALON = 0,
+		LEFT_REAR_TALON = 1,
+		RIGHT_FRONT_TALON = 2,
+		RIGHT_REAR_TALON = 3,
+		LEFT_JOYSTICK = 4,
+		GRABBER_TALON = 0,
+		ROLLER_TALON = 1,
+		GRABBER_ENCODER_A = 0,
+		GRABBER_ENCODER_B = 0,
+		FIRE_MOTOR = 5,
+		WHEELS_MOTOR = 6;
+>>>>>>> origin/master
 };
 
 #endif

@@ -16,6 +16,7 @@ void LiftArm::Execute()
 {
 	Joystick* j = CommandBase::oi->GetStick2();
 
+<<<<<<< HEAD
 	CommandBase::grabber->SetPID(
 		SmartDashboard::GetNumber("P", 0.0f),
 		SmartDashboard::GetNumber("I", 0.0f),
@@ -23,6 +24,10 @@ void LiftArm::Execute()
 
 	CommandBase::grabber->SetRollerSpeed(j->GetRawAxis(1));
 	CommandBase::grabber->SetLiftSpeed(-j->GetRawAxis(5));
+=======
+	CommandBase::grabber->SetLiftSpeed(j->GetRawAxis(2));
+	CommandBase::grabber->SetRollerSpeed(j->GetRawAxis(4) - j->GetRawAxis(3));
+>>>>>>> origin/master
 }
 
 // Make this return true when this Command no longer needs to run execute()

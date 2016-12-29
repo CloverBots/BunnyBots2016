@@ -11,6 +11,7 @@ private:
 	// for methods that implement subsystem capabilities
 	Talon* fire;
 	Talon* firewheels;
+<<<<<<< HEAD
 
 	const float WHEEL_POWER_DOWNSCALE = 0.25f;
 	const float FIRE_POWER_DOWNSCALE = 0.5f;
@@ -20,6 +21,15 @@ public:
 	void InitDefaultCommand();
 	void SetWheelSpeed(float speed);
 	void SetShooterSpeed(float speed);
+=======
+public:
+	nerfshooter();
+	void InitDefaultCommand();
+	void Fire();
+	void FireWheels();
+	void SetWheelSpeed(float speed);
+
+>>>>>>> origin/master
 };
 
 #endif
